@@ -214,7 +214,7 @@ const App = {
     const tokenName = await contract.name();
     const tokenSymbol = await contract.symbol();
     const documentUri = await contract.documentUri();
-    const tokenImage = this.formatUri(documentUri);
+    let tokenImage = this.formatUri(documentUri);
     const decimals = await contract.decimals();
 
     const isOwner = owner === account;
@@ -266,11 +266,24 @@ const App = {
     {
       const template = `
                 <h3>Add token to wallet</h3>
+                <div>
+                    <label for="addForm_tokenImage">Token Image:</label>
+                    <input type="text" id="addForm_tokenImage" placeholder="Token Image" value=${tokenImage}>
+                </div>
+
                 <button type="submit">Add Token</button>
             `;
 
       createManager('addForm', template, async (evt) => {
         that.toggleFormDisabled(true);
+
+        const newTokenImage = addForm.querySelector(
+          '#addForm_tokenImage'
+        ).value;
+
+        if (newTokenImage) {
+          tokenImage = newTokenImage;
+        }
 
         try {
           await that.forceWatchAsset(
